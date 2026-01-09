@@ -4,70 +4,245 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phone Detector AI</title>
+  <title>AI Detection System</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
   <style>
+    /* --- General Reset & Theme --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #1a1a2e;
-      color: white;
+      font-family: 'Poppins', sans-serif;
+      background-color: #0f172a;
+      /* Dark Blue/Black */
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* --- Navbar --- */
+    .navbar {
+      background-color: #1e293b;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #38bdf8;
+      /* Light Blue */
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links i {
+      font-size: 1.2rem;
+      color: #94a3b8;
+      margin-left: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .nav-links i:hover {
+      color: #38bdf8;
+    }
+
+    /* --- Main Content --- */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
       text-align: center;
-      font-family: sans-serif;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #f43f5e;
+      /* Red/Pink */
+    }
+
+    p#status {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    /* --- Video Container --- */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+      background-color: #000;
+      min-height: 300px;
+      /* Placeholder height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     video {
-      border: 5px solid #0f3460;
-      border-radius: 10px;
-      display: none;
       width: 100%;
-      max-width: 640px;
+      height: auto;
+      display: none;
     }
 
     canvas {
       position: absolute;
+      top: 0;
       left: 0;
-      right: 0;
-      margin: auto;
-      z-index: 10;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
-    .container {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
+    .placeholder-icon {
+      font-size: 4rem;
+      color: #334155;
+    }
+
+    /* --- Buttons --- */
+    .controls {
+      margin-top: 25px;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-      background: #e94560;
-      color: white;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: 600;
       border: none;
-      border-radius: 5px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 0 10px;
     }
 
-    #status {
-      margin-top: 10px;
-      color: #ccc;
+    #startBtn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    #startBtn:hover {
+      transform: translateY(-2px);
+    }
+
+    #startBtn:disabled {
+      background: #475569;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    #stopBtn {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      display: none;
+      /* Initially Hidden */
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    }
+
+    #stopBtn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* --- Footer --- */
+    footer {
+      background-color: #1e293b;
+      padding: 20px;
+      text-align: center;
+      margin-top: auto;
+      border-top: 1px solid #334155;
+    }
+
+    .footer-text {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .social-icons a {
+      color: #cbd5e1;
+      font-size: 1.5rem;
+      margin: 0 10px;
+      transition: color 0.3s, transform 0.3s;
+      display: inline-block;
+    }
+
+    .social-icons a:hover {
+      color: #38bdf8;
+      transform: scale(1.1);
     }
   </style>
 </head>
 
 <body>
-  <h1>📵 No Phone Zone (Web Version)</h1>
-  <p id="status">Loading AI Model...</p>
-  <button id="startBtn" onclick="startCamera()" disabled>Start Camera</button>
-  <br><br>
 
-  <div class="container">
-    <video id="video" playsinline muted></video>
-    <canvas id="canvas"></canvas>
-  </div>
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-robot"></i> Face Detection</div>
+    <div class="nav-links">
+      <i class="fas fa-bell"></i>
+      <i class="fas fa-user-circle"></i>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <h1>📵 No Phone Zone</h1>
+    <p id="status">Loading AI Model...</p>
+
+    <div class="video-wrapper">
+      <div id="placeholder" class="placeholder-icon">
+        <i class="fas fa-video-slash"></i>
+      </div>
+      <video id="video" playsinline muted></video>
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn" onclick="startCamera()" disabled>
+        <i class="fas fa-play"></i> Start Camera
+      </button>
+      <button id="stopBtn" onclick="stopCamera()">
+        <i class="fas fa-stop"></i> Stop Camera
+      </button>
+    </div>
+  </main>
 
   <audio id="alertSound" src="audio.mp3"></audio>
+
+  <footer>
+    <p class="footer-text">Copyright &copy; 2026 Atul Paul. All rights reserved.</p>
+    <div class="social-icons">
+      <a href="https://github.com/YOUR_USERNAME" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://linkedin.com/in/YOUR_USERNAME" target="_blank" title="LinkedIn"><i
+          class="fab fa-linkedin"></i></a>
+      <a href="https://discord.com/users/YOUR_ID" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+    </div>
+  </footer>
 
   <script>
     const video = document.getElementById('video');
@@ -75,51 +250,120 @@
     const ctx = canvas.getContext('2d');
     const statusText = document.getElementById('status');
     const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const placeholder = document.getElementById('placeholder');
     const alertSound = document.getElementById('alertSound');
-    let model;
 
-    // Load Model
+    let model;
+    let stream = null;
+    let isDetecting = false;
+    let lastAlertTime = 0;
+
+    // Load AI Model
     cocoSsd.load().then(loadedModel => {
       model = loadedModel;
-      statusText.innerText = "AI Ready! Press Start.";
+      statusText.innerText = "System Ready. Press Start.";
       startBtn.disabled = false;
     });
 
+    // Start Camera Function
     async function startCamera() {
-      startBtn.style.display = 'none';
-      statusText.innerText = "Starting Camera...";
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-      video.srcObject = stream;
-      video.style.display = "block";
+      statusText.innerText = "Initializing Camera...";
+      startBtn.disabled = true; // Button disable koro loading er somoy
 
-      video.onloadedmetadata = () => {
-        video.play();
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        detectFrame();
-      };
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+          audio: false
+        });
+
+        video.srcObject = stream;
+
+        video.onloadedmetadata = () => {
+          placeholder.style.display = 'none'; // Icon soraw
+          video.style.display = "block"; // Video dekhaw
+          video.play();
+
+          // Setup Canvas
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+
+          // Buttons Update
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'inline-block';
+          statusText.innerText = "Scanning for Phones...";
+
+          isDetecting = true;
+          detectFrame();
+        };
+      } catch (err) {
+        console.error(err);
+        statusText.innerText = "Error: Camera access denied.";
+        alert("Please allow camera permission!");
+        startBtn.disabled = false;
+      }
     }
 
+    // Stop Camera Function
+    function stopCamera() {
+      isDetecting = false;
+
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+
+      // UI Reset
+      video.style.display = "none";
+      placeholder.style.display = "flex"; // Icon abar anow
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      startBtn.style.display = 'inline-block';
+      startBtn.disabled = false;
+      stopBtn.style.display = 'none';
+      statusText.innerText = "Camera Stopped.";
+    }
+
+    // Detection Loop
     function detectFrame() {
+      if (!isDetecting) return;
+
       model.detect(video).then(predictions => {
+        if (!isDetecting) return;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let phoneDetected = false;
+        let phoneFound = false;
 
         predictions.forEach(prediction => {
+          // Check for Cell Phone
           if (prediction.class === 'cell phone') {
-            phoneDetected = true;
+            phoneFound = true;
+
             const [x, y, width, height] = prediction.bbox;
-            ctx.strokeStyle = "red";
+
+            // Draw Stylish Box
+            ctx.strokeStyle = "#f43f5e"; // Red/Pink
             ctx.lineWidth = 4;
             ctx.strokeRect(x, y, width, height);
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "red";
-            ctx.fillText("PHONE DETECTED!", x, y - 10);
+
+            // Background for Text
+            ctx.fillStyle = "#f43f5e";
+            ctx.fillRect(x, y - 30, width, 30);
+
+            // Text
+            ctx.font = "bold 16px Poppins";
+            ctx.fillStyle = "white";
+            ctx.fillText("PHONE DETECTED", x + 10, y - 10);
           }
         });
 
-        if (phoneDetected) {
-          alertSound.play().catch(() => { });
+        // Audio Logic with 3s Delay (Too much noise control)
+        if (phoneFound) {
+          const now = Date.now();
+          if (now - lastAlertTime > 3000) {
+            alertSound.play().catch(() => { });
+            lastAlertTime = now;
+          }
         }
 
         requestAnimationFrame(detectFrame);
