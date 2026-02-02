@@ -4,18 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Detection System - Pro | ATUL PAUL</title>
+  <title>AI VISION - Pro Detection | ATUL PAUL</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet">
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
 
   <style>
-    /* --- 1. Dynamic Background & Reset --- */
+    /* --- 1. Core Aesthetics & Animated Background --- */
     * {
       margin: 0;
       padding: 0;
@@ -24,17 +24,19 @@
 
     body {
       font-family: 'Poppins', sans-serif;
+      background: #000;
       color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      /* Animated Gradient Background */
-      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+      /* Dynamic Gradient Animation */
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #020024);
       background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      animation: gradientShift 15s ease infinite;
+      overflow-x: hidden;
     }
 
-    @keyframes gradientBG {
+    @keyframes gradientShift {
       0% {
         background-position: 0% 50%;
       }
@@ -48,9 +50,27 @@
       }
     }
 
+    /* Typography & Neon Effects */
+    h1,
+    .logo,
+    button {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .neon-text-blue {
+      color: #00f3ff;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5);
+    }
+
+    .neon-text-pink {
+      color: #ff0055;
+      text-shadow: 0 0 10px rgba(255, 0, 85, 0.7), 0 0 20px rgba(255, 0, 85, 0.5);
+    }
+
     /* --- 2. Glassmorphism Navbar --- */
     .navbar {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(10px);
       padding: 15px 30px;
       display: flex;
@@ -59,89 +79,84 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
     }
 
     .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      -webkit-background-clip: text;
-      color: transparent;
-      font-weight: bold;
-      letter-spacing: 2px;
+      font-size: 1.4rem;
+      font-weight: 700;
     }
 
-    .nav-links i {
-      font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-left: 20px;
-      cursor: pointer;
-      transition: 0.3s;
+    .logo i {
+      margin-right: 10px;
     }
 
-    .nav-links i:hover {
-      color: #00c6ff;
-      transform: scale(1.2);
-      text-shadow: 0 0 10px #00c6ff;
-    }
-
-    /* --- 3. Main Card --- */
-    .main-content {
+    /* --- 3. Main Interface (Glass Card) --- */
+    .main-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      text-align: center;
     }
 
-    .glass-card {
+    .glass-panel {
       background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px);
+      /* Ultra transparent */
+      backdrop-filter: blur(20px);
+      /* Strong blur effect */
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 30px;
-      border-radius: 20px;
+      border-radius: 25px;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      max-width: 800px;
-      width: 95%;
-      margin-top: 20px;
+      width: 100%;
+      max-width: 750px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .glass-panel:hover {
+      border-color: rgba(0, 243, 255, 0.3);
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      -webkit-background-clip: text;
-      color: transparent;
-      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 15px;
     }
 
-    .status-badge {
-      display: inline-block;
-      padding: 5px 15px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50px;
+    .subtitle {
+      color: #a0a0a0;
+      margin-bottom: 25px;
       font-size: 0.9rem;
-      color: #ccc;
-      margin-bottom: 20px;
     }
 
-    /* --- 4. Video Area with Scanning Effect --- */
+    #status {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(0, 243, 255, 0.1);
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      border: 1px solid rgba(0, 243, 255, 0.3);
+    }
+
+    /* --- 4. Sci-fi Video Area & Scanning Animation --- */
     .video-wrapper {
       position: relative;
       width: 100%;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(0, 198, 255, 0.3);
-      /* Neon Blue Glow */
+      /* Initial Blue Neon Glow */
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
+      border: 2px solid rgba(0, 243, 255, 0.4);
       background: #000;
       min-height: 350px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid rgba(0, 198, 255, 0.3);
+      transition: all 0.3s ease;
     }
 
     video {
@@ -156,35 +171,36 @@
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: 10;
       pointer-events: none;
     }
 
-    /* Scanning Line Animation */
+    /* The Scanning Line */
     .scan-line {
       position: absolute;
       width: 100%;
-      height: 2px;
-      background: rgba(0, 255, 0, 0.8);
-      box-shadow: 0 0 10px #0f0;
+      height: 3px;
+      background: rgba(0, 243, 255, 0.8);
+      box-shadow: 0 0 15px rgba(0, 243, 255, 1);
       top: 0;
       left: 0;
-      animation: scan 2s linear infinite;
-      display: none;
-      /* Show when active */
       z-index: 5;
+      animation: scanAnim 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      display: none;
+      /* Hidden initially */
     }
 
-    @keyframes scan {
+    @keyframes scanAnim {
       0% {
         top: 0;
         opacity: 0;
       }
 
-      10% {
+      25% {
         opacity: 1;
       }
 
-      90% {
+      75% {
         opacity: 1;
       }
 
@@ -197,126 +213,106 @@
     .placeholder-icon {
       font-size: 5rem;
       color: rgba(255, 255, 255, 0.1);
-      animation: pulse 2s infinite;
+      animation: pulseIcon 3s infinite ease-in-out;
     }
 
-    @keyframes pulse {
+    @keyframes pulseIcon {
       0% {
-        transform: scale(1);
+        opacity: 0.3;
+        scale: 1;
       }
 
       50% {
-        transform: scale(1.1);
+        opacity: 0.6;
+        scale: 1.05;
       }
 
       100% {
-        transform: scale(1);
+        opacity: 0.3;
+        scale: 1;
       }
     }
 
-    /* --- 5. Neon Buttons --- */
+
+    /* --- 5. Futuristic Buttons --- */
     .controls {
       margin-top: 30px;
       display: flex;
-      gap: 20px;
       justify-content: center;
+      gap: 15px;
       flex-wrap: wrap;
     }
 
     button {
-      padding: 14px 35px;
+      padding: 12px 35px;
       font-size: 1rem;
       font-weight: 600;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: 0.3s;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      text-transform: uppercase;
     }
 
     #startBtn {
       background: transparent;
-      color: #00c6ff;
-      border: 2px solid #00c6ff;
-      box-shadow: 0 0 10px rgba(0, 198, 255, 0.2);
+      color: #00f3ff;
+      border: 2px solid #00f3ff;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
     }
 
     #startBtn:hover {
-      background: #00c6ff;
+      background: #00f3ff;
       color: #000;
-      box-shadow: 0 0 20px rgba(0, 198, 255, 0.8);
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.6);
+      transform: translateY(-2px);
     }
 
     #stopBtn {
       background: transparent;
-      color: #ff416c;
-      border: 2px solid #ff416c;
+      color: #ff0055;
+      border: 2px solid #ff0055;
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
       display: none;
     }
 
     #stopBtn:hover {
-      background: #ff416c;
-      color: white;
-      box-shadow: 0 0 20px rgba(255, 65, 108, 0.8);
+      background: #ff0055;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+      transform: translateY(-2px);
     }
 
     button:disabled {
-      border-color: #555;
-      color: #555;
+      opacity: 0.5;
       cursor: not-allowed;
       box-shadow: none;
-      background: transparent;
+      transform: none !important;
     }
 
-    /* --- 6. Footer --- */
+
+    /* --- Footer --- */
     footer {
-      background: rgba(0, 0, 0, 0.2);
       padding: 20px;
       text-align: center;
-      margin-top: auto;
+      background: rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(5px);
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
       border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .social-icons a {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 1.5rem;
-      margin: 0 15px;
-      transition: 0.3s;
-    }
-
-    .social-icons a:hover {
-      color: #fff;
-      transform: translateY(-3px);
-    }
-
-    .social-icons a.fa-github:hover {
-      color: #fff;
-    }
-
-    .social-icons a.fa-linkedin:hover {
-      color: #0077b5;
-    }
-
-    .social-icons a.fa-discord:hover {
-      color: #5865F2;
-    }
-
-    /* Mobile Responsive */
+    /* Responsive adjustments */
     @media (max-width: 600px) {
       h1 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
       }
 
-      .glass-card {
-        padding: 15px;
-        width: 100%;
-        border: none;
-        background: transparent;
-        box-shadow: none;
+      .glass-panel {
+        padding: 20px;
+        width: 95%;
       }
 
       .navbar {
@@ -329,35 +325,36 @@
 <body>
 
   <nav class="navbar">
-    <div class="logo"><i class="fas fa-eye"></i> AI VISION</div>
-    <div class="nav-links">
-      <i class="fas fa-moon"></i>
-      <i class="fas fa-info-circle"></i>
-    </div>
+    <div class="logo neon-text-blue"><i class="fas fa-robot"></i> AI VISION SYSTEM</div>
+    <div style="opacity: 0.7;"><i class="fas fa-network-wired"></i> v2.0</div>
   </nav>
 
-  <main class="main-content">
-    <div class="glass-card">
-      <h1>NO PHONE ZONE</h1>
-      <div class="status-badge" id="status">
-        <i class="fas fa-spinner fa-spin"></i> Loading AI Models...
+  <main class="main-container">
+    <div class="glass-panel">
+      <h1><span class="neon-text-pink">NO PHONE</span> ZONE</h1>
+      <p class="subtitle">Real-time autonomous detection powered by TensorFlow.js</p>
+
+      <div id="status">
+        <i class="fas fa-circle-notch fa-spin"></i> Initializing Neural Network...
       </div>
 
       <div class="video-wrapper">
         <div class="scan-line" id="scanLine"></div>
+
         <div id="placeholder" class="placeholder-icon">
-          <i class="fas fa-camera"></i>
+          <i class="fas fa-camera-retro"></i>
         </div>
+
         <video id="video" playsinline muted></video>
         <canvas id="canvas"></canvas>
       </div>
 
       <div class="controls">
         <button id="startBtn" onclick="startCamera()" disabled>
-          START DETECTION
+          INITIALIZE SYSTEM
         </button>
         <button id="stopBtn" onclick="stopCamera()">
-          STOP CAMERA
+          TERMINATE SCAN
         </button>
       </div>
     </div>
@@ -366,12 +363,7 @@
   <audio id="alertSound" src="audio.mp3"></audio>
 
   <footer>
-    <div class="social-icons">
-      <a href="https://github.com/atul-dev-ai" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="https://www.linkedin.com/in/paul-atul/" target="_blank"><i class="fab fa-linkedin"></i></a>
-      <a href="https://discord.gg/ba5Gmj5zj6" target="_blank"><i class="fab fa-discord"></i></a>
-    </div>
-    <p style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;">&copy; 2026 Atul Paul. Powered by TensorFlow.js</p>
+    <p>© 2026 Atul Paul | Advanced AI Project</p>
   </footer>
 
   <script>
@@ -384,28 +376,33 @@
     const placeholder = document.getElementById('placeholder');
     const scanLine = document.getElementById('scanLine');
     const alertSound = document.getElementById('alertSound');
+    const videoWrapper = document.querySelector('.video-wrapper');
 
-    let model;
+    let model = undefined;
     let stream = null;
     let isDetecting = false;
     let lastAlertTime = 0;
 
-    // Load Model
+    // 1. Load Model
     cocoSsd.load().then(loadedModel => {
       model = loadedModel;
-      statusText.innerHTML = '<i class="fas fa-check-circle"></i> System Ready';
-      statusText.style.color = "#00ff88";
+      statusText.innerHTML = '<i class="fas fa-check-circle" style="color:#00f3ff"></i> AI Model Ready. Awaiting Input.';
+      statusText.style.borderColor = "rgba(0, 243, 255, 0.5)";
       startBtn.disabled = false;
+    }).catch(err => {
+      statusText.innerHTML = '<i class="fas fa-times-circle" style="color:#ff0055"></i> Model Failed to Load.';
+      console.error("Model Load Error:", err);
     });
 
+    // 2. Start Camera
     async function startCamera() {
-      statusText.innerHTML = '<i class="fas fa-cog fa-spin"></i> Initializing Camera...';
+      statusText.innerHTML = '<i class="fas fa-cog fa-spin"></i> Accessing Optical Sensors...';
       startBtn.disabled = true;
 
       try {
-        // ল্যাপটপ ও মোবাইল উভয়ের জন্য সাপোর্ট বাড়াতে কনফিগারেশন চেঞ্জ করা হলো
+        // Universal camera constraints
         stream = await navigator.mediaDevices.getUserMedia({
-          video: true, // শুধু true দিলে যেকোনো ক্যামেরা নিবে (এরর কম হবে)
+          video: { facingMode: 'environment' },
           audio: false
         });
 
@@ -414,7 +411,7 @@
         video.onloadedmetadata = () => {
           placeholder.style.display = 'none';
           video.style.display = "block";
-          scanLine.style.display = "block"; // Show scanning line
+          scanLine.style.display = "block"; // Activate scanning animation
           video.play();
 
           canvas.width = video.videoWidth;
@@ -422,27 +419,28 @@
 
           startBtn.style.display = 'none';
           stopBtn.style.display = 'inline-block';
-          statusText.innerHTML = '<i class="fas fa-satellite-dish"></i> Scanning Active';
-          statusText.style.color = "#00c6ff";
+          statusText.innerHTML = '<i class="fas fa-satellite-dish" style="color:#00f3ff"></i> Scanning Active. Monitoring Sector.';
 
           isDetecting = true;
           detectFrame();
         };
       } catch (err) {
-        console.error(err);
-        statusText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Camera Error';
-        statusText.style.color = "#ff416c";
+        console.error("Camera Error:", err);
+        statusText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#ff0055"></i> Sensor Access Denied.';
+        statusText.style.borderColor = "#ff0055";
         startBtn.disabled = false;
-        alert("Please allow camera permission!");
+        alert("Could not access camera. Please check browser permissions.");
       }
     }
 
+    // 3. Stop Camera
     function stopCamera() {
       isDetecting = false;
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         video.srcObject = null;
       }
+      // Reset UI
       video.style.display = "none";
       scanLine.style.display = "none";
       placeholder.style.display = "block";
@@ -451,10 +449,15 @@
       startBtn.style.display = 'inline-block';
       startBtn.disabled = false;
       stopBtn.style.display = 'none';
-      statusText.innerHTML = '<i class="fas fa-pause-circle"></i> Camera Stopped';
-      statusText.style.color = "#ccc";
+      statusText.innerHTML = '<i class="fas fa-pause-circle"></i> System Terminated.';
+      statusText.style.borderColor = "rgba(255, 255, 255, 0.3)";
+
+      // Reset border glow
+      videoWrapper.style.boxShadow = "0 0 25px rgba(0, 243, 255, 0.2)";
+      videoWrapper.style.borderColor = "rgba(0, 243, 255, 0.4)";
     }
 
+    // 4. Detection Loop
     function detectFrame() {
       if (!isDetecting) return;
 
@@ -469,37 +472,38 @@
             phoneFound = true;
             const [x, y, width, height] = prediction.bbox;
 
-            // Futuristic Box Design
-            ctx.strokeStyle = "#ff0055"; // Neon Pink
-            ctx.lineWidth = 4;
-
-            // Corner Effect (Draw only corners looks cool)
+            // Futuristic Box Style (Neon Pink)
+            ctx.strokeStyle = "#ff0055";
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 5]); // Dashed cyberpunk line
             ctx.strokeRect(x, y, width, height);
+            ctx.setLineDash([]); // Reset dash
 
-            // Text Background
+            // Label Background
             ctx.fillStyle = "rgba(255, 0, 85, 0.8)";
-            ctx.fillRect(x, y - 25, width, 25);
+            ctx.fillRect(x, y - 30, width, 30);
 
-            // Text
-            ctx.font = "bold 16px Orbitron";
+            // Label Text
+            ctx.font = "bold 14px Orbitron";
             ctx.fillStyle = "#fff";
-            ctx.fillText("TARGET: PHONE", x + 5, y - 7);
+            ctx.fillText("⚠️ TARGET: PHONE", x + 10, y - 10);
           }
         });
 
+        // Visual & Audio Feedback on Detection
         if (phoneFound) {
           const now = Date.now();
           if (now - lastAlertTime > 3000) {
             alertSound.play().catch(() => { });
             lastAlertTime = now;
           }
-          // Border changes to RED when detected
-          document.querySelector('.video-wrapper').style.boxShadow = "0 0 30px rgba(255, 0, 85, 0.6)";
-          document.querySelector('.video-wrapper').style.borderColor = "#ff0055";
+          // Change border to Danger Red/Pink
+          videoWrapper.style.boxShadow = "0 0 40px rgba(255, 0, 85, 0.7)";
+          videoWrapper.style.borderColor = "#ff0055";
         } else {
-          // Border back to BLUE when safe
-          document.querySelector('.video-wrapper').style.boxShadow = "0 0 30px rgba(0, 198, 255, 0.3)";
-          document.querySelector('.video-wrapper').style.borderColor = "rgba(0, 198, 255, 0.3)";
+          // Revert to Passive Blue
+          videoWrapper.style.boxShadow = "0 0 25px rgba(0, 243, 255, 0.2)";
+          videoWrapper.style.borderColor = "rgba(0, 243, 255, 0.4)";
         }
 
         requestAnimationFrame(detectFrame);
