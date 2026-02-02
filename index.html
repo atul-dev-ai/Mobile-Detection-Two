@@ -4,17 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Detection System | Atul Paul</title>
+  <title>AI Detection System - Pro | ATUL PAUL</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
   <style>
-    /* --- General Reset & Theme --- */
+    /* --- 1. Dynamic Background & Reset --- */
     * {
       margin: 0;
       padding: 0;
@@ -23,49 +24,69 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: #0f172a;
-      /* Dark Blue/Black */
-      color: #e2e8f0;
+      color: #fff;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      /* Animated Gradient Background */
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
     }
 
-    /* --- Navbar --- */
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* --- 2. Glassmorphism Navbar --- */
     .navbar {
-      background-color: #1e293b;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
     .logo {
+      font-family: 'Orbitron', sans-serif;
       font-size: 1.5rem;
-      font-weight: 600;
-      color: #38bdf8;
-      /* Light Blue */
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
 
     .nav-links i {
       font-size: 1.2rem;
-      color: #94a3b8;
-      margin-left: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-left: 20px;
       cursor: pointer;
       transition: 0.3s;
     }
 
     .nav-links i:hover {
-      color: #38bdf8;
+      color: #00c6ff;
+      transform: scale(1.2);
+      text-shadow: 0 0 10px #00c6ff;
     }
 
-    /* --- Main Content --- */
+    /* --- 3. Main Card --- */
     .main-content {
       flex: 1;
       display: flex;
@@ -76,33 +97,51 @@
       text-align: center;
     }
 
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      max-width: 800px;
+      width: 95%;
+      margin-top: 20px;
+    }
+
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       margin-bottom: 10px;
-      color: #f43f5e;
-      /* Red/Pink */
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-weight: 700;
     }
 
-    p#status {
-      color: #94a3b8;
+    .status-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      color: #ccc;
       margin-bottom: 20px;
-      font-style: italic;
     }
 
-    /* --- Video Container --- */
+    /* --- 4. Video Area with Scanning Effect --- */
     .video-wrapper {
       position: relative;
       width: 100%;
-      max-width: 700px;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-      background-color: #000;
-      min-height: 300px;
-      /* Placeholder height */
+      box-shadow: 0 0 30px rgba(0, 198, 255, 0.3);
+      /* Neon Blue Glow */
+      background: #000;
+      min-height: 350px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 2px solid rgba(0, 198, 255, 0.3);
     }
 
     video {
@@ -120,82 +159,169 @@
       pointer-events: none;
     }
 
-    .placeholder-icon {
-      font-size: 4rem;
-      color: #334155;
+    /* Scanning Line Animation */
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: rgba(0, 255, 0, 0.8);
+      box-shadow: 0 0 10px #0f0;
+      top: 0;
+      left: 0;
+      animation: scan 2s linear infinite;
+      display: none;
+      /* Show when active */
+      z-index: 5;
     }
 
-    /* --- Buttons --- */
+    @keyframes scan {
+      0% {
+        top: 0;
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    .placeholder-icon {
+      font-size: 5rem;
+      color: rgba(255, 255, 255, 0.1);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* --- 5. Neon Buttons --- */
     .controls {
-      margin-top: 25px;
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     button {
-      padding: 12px 30px;
+      padding: 14px 35px;
       font-size: 1rem;
       font-weight: 600;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin: 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
     #startBtn {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      color: white;
-      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      background: transparent;
+      color: #00c6ff;
+      border: 2px solid #00c6ff;
+      box-shadow: 0 0 10px rgba(0, 198, 255, 0.2);
     }
 
     #startBtn:hover {
-      transform: translateY(-2px);
-    }
-
-    #startBtn:disabled {
-      background: #475569;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
+      background: #00c6ff;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 198, 255, 0.8);
     }
 
     #stopBtn {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
+      background: transparent;
+      color: #ff416c;
+      border: 2px solid #ff416c;
       display: none;
-      /* Initially Hidden */
-      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
     }
 
     #stopBtn:hover {
-      transform: translateY(-2px);
+      background: #ff416c;
+      color: white;
+      box-shadow: 0 0 20px rgba(255, 65, 108, 0.8);
     }
 
-    /* --- Footer --- */
+    button:disabled {
+      border-color: #555;
+      color: #555;
+      cursor: not-allowed;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    /* --- 6. Footer --- */
     footer {
-      background-color: #1e293b;
+      background: rgba(0, 0, 0, 0.2);
       padding: 20px;
       text-align: center;
       margin-top: auto;
-      border-top: 1px solid #334155;
-    }
-
-    .footer-text {
-      color: #94a3b8;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
+      backdrop-filter: blur(5px);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .social-icons a {
-      color: #cbd5e1;
+      color: rgba(255, 255, 255, 0.6);
       font-size: 1.5rem;
-      margin: 0 10px;
-      transition: color 0.3s, transform 0.3s;
-      display: inline-block;
+      margin: 0 15px;
+      transition: 0.3s;
     }
 
     .social-icons a:hover {
-      color: #38bdf8;
-      transform: scale(1.1);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .social-icons a.fa-github:hover {
+      color: #fff;
+    }
+
+    .social-icons a.fa-linkedin:hover {
+      color: #0077b5;
+    }
+
+    .social-icons a.fa-discord:hover {
+      color: #5865F2;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .glass-card {
+        padding: 15px;
+        width: 100%;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .navbar {
+        padding: 15px;
+      }
     }
   </style>
 </head>
@@ -203,45 +329,49 @@
 <body>
 
   <nav class="navbar">
-    <div class="logo"><i class="fas fa-robot"></i> Mobile Detection</div>
+    <div class="logo"><i class="fas fa-eye"></i> AI VISION</div>
     <div class="nav-links">
-      <i class="fas fa-bell"></i>
-      <i class="fas fa-user-circle"></i>
+      <i class="fas fa-moon"></i>
+      <i class="fas fa-info-circle"></i>
     </div>
   </nav>
 
   <main class="main-content">
-    <h1>📵 No Phone Zone</h1>
-    <p id="status">Loading AI Model...</p>
-
-    <div class="video-wrapper">
-      <div id="placeholder" class="placeholder-icon">
-        <i class="fas fa-video-slash"></i>
+    <div class="glass-card">
+      <h1>NO PHONE ZONE</h1>
+      <div class="status-badge" id="status">
+        <i class="fas fa-spinner fa-spin"></i> Loading AI Models...
       </div>
-      <video id="video" playsinline muted></video>
-      <canvas id="canvas"></canvas>
-    </div>
 
-    <div class="controls">
-      <button id="startBtn" onclick="startCamera()" disabled>
-        <i class="fas fa-play"></i> Start Camera
-      </button>
-      <button id="stopBtn" onclick="stopCamera()">
-        <i class="fas fa-stop"></i> Stop Camera
-      </button>
+      <div class="video-wrapper">
+        <div class="scan-line" id="scanLine"></div>
+        <div id="placeholder" class="placeholder-icon">
+          <i class="fas fa-camera"></i>
+        </div>
+        <video id="video" playsinline muted></video>
+        <canvas id="canvas"></canvas>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" onclick="startCamera()" disabled>
+          START DETECTION
+        </button>
+        <button id="stopBtn" onclick="stopCamera()">
+          STOP CAMERA
+        </button>
+      </div>
     </div>
   </main>
 
   <audio id="alertSound" src="audio.mp3"></audio>
 
   <footer>
-    <p class="footer-text">Copyright &copy; 2026 <a href="https://atul-dev-ai.github.io/grand-portfolio/" target="_blank"> Atul Paul.</a> All rights reserved.</p>
     <div class="social-icons">
-      <a href="https://github.com/atul-dev-ai" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-      <a href="https://www.linkedin.com/in/paul-atul/" target="_blank" title="LinkedIn"><i
-          class="fab fa-linkedin"></i></a>
-      <a href="https://discord.gg/ba5Gmj5zj6" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+      <a href="https://github.com/atul-dev-ai" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="https://www.linkedin.com/in/paul-atul/" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <a href="https://discord.gg/ba5Gmj5zj6" target="_blank"><i class="fab fa-discord"></i></a>
     </div>
+    <p style="margin-top:10px; font-size: 0.8rem; opacity: 0.5;">&copy; 2026 Atul Paul. Powered by TensorFlow.js</p>
   </footer>
 
   <script>
@@ -252,6 +382,7 @@
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
     const placeholder = document.getElementById('placeholder');
+    const scanLine = document.getElementById('scanLine');
     const alertSound = document.getElementById('alertSound');
 
     let model;
@@ -259,72 +390,71 @@
     let isDetecting = false;
     let lastAlertTime = 0;
 
-    // Load AI Model
+    // Load Model
     cocoSsd.load().then(loadedModel => {
       model = loadedModel;
-      statusText.innerText = "System Ready. Press Start.";
+      statusText.innerHTML = '<i class="fas fa-check-circle"></i> System Ready';
+      statusText.style.color = "#00ff88";
       startBtn.disabled = false;
     });
 
-    // Start Camera Function
     async function startCamera() {
-      statusText.innerText = "Initializing Camera...";
-      startBtn.disabled = true; // Button disable koro loading er somoy
+      statusText.innerHTML = '<i class="fas fa-cog fa-spin"></i> Initializing Camera...';
+      startBtn.disabled = true;
 
       try {
+        // ল্যাপটপ ও মোবাইল উভয়ের জন্য সাপোর্ট বাড়াতে কনফিগারেশন চেঞ্জ করা হলো
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
+          video: true, // শুধু true দিলে যেকোনো ক্যামেরা নিবে (এরর কম হবে)
           audio: false
         });
 
         video.srcObject = stream;
 
         video.onloadedmetadata = () => {
-          placeholder.style.display = 'none'; // Icon soraw
-          video.style.display = "block"; // Video dekhaw
+          placeholder.style.display = 'none';
+          video.style.display = "block";
+          scanLine.style.display = "block"; // Show scanning line
           video.play();
 
-          // Setup Canvas
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
 
-          // Buttons Update
           startBtn.style.display = 'none';
           stopBtn.style.display = 'inline-block';
-          statusText.innerText = "Scanning for Phones...";
+          statusText.innerHTML = '<i class="fas fa-satellite-dish"></i> Scanning Active';
+          statusText.style.color = "#00c6ff";
 
           isDetecting = true;
           detectFrame();
         };
       } catch (err) {
         console.error(err);
-        statusText.innerText = "Error: Camera access denied.";
-        alert("Please allow camera permission!");
+        statusText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Camera Error';
+        statusText.style.color = "#ff416c";
         startBtn.disabled = false;
+        alert("Please allow camera permission!");
       }
     }
 
-    // Stop Camera Function
     function stopCamera() {
       isDetecting = false;
-
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         video.srcObject = null;
       }
-
-      // UI Reset
       video.style.display = "none";
-      placeholder.style.display = "flex"; // Icon abar anow
+      scanLine.style.display = "none";
+      placeholder.style.display = "block";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       startBtn.style.display = 'inline-block';
       startBtn.disabled = false;
       stopBtn.style.display = 'none';
-      statusText.innerText = "Camera Stopped.";
+      statusText.innerHTML = '<i class="fas fa-pause-circle"></i> Camera Stopped';
+      statusText.style.color = "#ccc";
     }
 
-    // Detection Loop
     function detectFrame() {
       if (!isDetecting) return;
 
@@ -335,35 +465,41 @@
         let phoneFound = false;
 
         predictions.forEach(prediction => {
-          // Check for Cell Phone
           if (prediction.class === 'cell phone') {
             phoneFound = true;
-
             const [x, y, width, height] = prediction.bbox;
 
-            // Draw Stylish Box
-            ctx.strokeStyle = "#f43f5e"; // Red/Pink
+            // Futuristic Box Design
+            ctx.strokeStyle = "#ff0055"; // Neon Pink
             ctx.lineWidth = 4;
+
+            // Corner Effect (Draw only corners looks cool)
             ctx.strokeRect(x, y, width, height);
 
-            // Background for Text
-            ctx.fillStyle = "#f43f5e";
-            ctx.fillRect(x, y - 30, width, 30);
+            // Text Background
+            ctx.fillStyle = "rgba(255, 0, 85, 0.8)";
+            ctx.fillRect(x, y - 25, width, 25);
 
             // Text
-            ctx.font = "bold 16px Poppins";
-            ctx.fillStyle = "white";
-            ctx.fillText("PHONE DETECTED", x + 10, y - 10);
+            ctx.font = "bold 16px Orbitron";
+            ctx.fillStyle = "#fff";
+            ctx.fillText("TARGET: PHONE", x + 5, y - 7);
           }
         });
 
-        // Audio Logic with 3s Delay (Too much noise control)
         if (phoneFound) {
           const now = Date.now();
           if (now - lastAlertTime > 3000) {
             alertSound.play().catch(() => { });
             lastAlertTime = now;
           }
+          // Border changes to RED when detected
+          document.querySelector('.video-wrapper').style.boxShadow = "0 0 30px rgba(255, 0, 85, 0.6)";
+          document.querySelector('.video-wrapper').style.borderColor = "#ff0055";
+        } else {
+          // Border back to BLUE when safe
+          document.querySelector('.video-wrapper').style.boxShadow = "0 0 30px rgba(0, 198, 255, 0.3)";
+          document.querySelector('.video-wrapper').style.borderColor = "rgba(0, 198, 255, 0.3)";
         }
 
         requestAnimationFrame(detectFrame);
