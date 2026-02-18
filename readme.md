@@ -57,7 +57,7 @@ When a phone is detected with high confidence, the system triggers an immediate 
 
 | **Desktop Interface** | **Mobile Interface** |
 |:---:|:---:|
-| <img src="ai-detection.png" width="100%"> | <img src="mobile-view" width="100%"> |
+| <img src="ai-detection.png" width="100%"> | <img src="mobile-view.png" width="100%"> |
 
 > *https://atul-dev-ai.github.io/Mobile-Detection-Two*
 
