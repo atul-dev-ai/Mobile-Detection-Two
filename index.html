@@ -7,57 +7,502 @@
   <title>AI VISION - Pro Detection | ATUL PAUL</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet">
 
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+
   <link rel="stylesheet" href="index.css">
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .font-orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .font-poppins {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Neon Effects */
+    .neon-text-blue {
+      text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+    }
+
+    .neon-text-pink {
+      text-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899;
+    }
+  </style>
 </head>
 
-<body>
+<body class="bg-gray-900 text-white font-poppins">
 
-  <nav class="navbar">
-    <div class="logo neon-text-blue"><i class="fas fa-robot"></i> AI VISION SYSTEM</div>
-    <div style="opacity: 0.7;"><i class="fas fa-network-wired"></i> v2.0</div>
+  <nav class="fixed w-full z-50 top-0 start-0 border-b border-gray-800 bg-gray-900/90 backdrop-blur-md">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+
+      <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse group">
+        <div
+          class="relative w-10 h-10 flex items-center justify-center bg-blue-600/20 rounded-lg border border-blue-500/50 group-hover:bg-blue-600/40 transition duration-300">
+          <i class="fas fa-robot text-xl text-blue-400 neon-text-blue"></i>
+        </div>
+        <span class="self-center text-2xl font-bold whitespace-nowrap font-orbitron tracking-wider">
+          AI <span class="text-blue-500 neon-text-blue">VISION</span>
+        </span>
+      </a>
+
+      <button data-collapse-toggle="navbar-sticky" type="button"
+        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700"
+        aria-controls="navbar-sticky" aria-expanded="false" onclick="toggleMenu()">
+        <span class="sr-only">Open main menu</span>
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+
+      <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+        <ul
+          class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-700 rounded-lg bg-gray-800/50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent">
+          <li>
+            <a href="#"
+              class="block py-2 px-3 text-gray-300 hover:bg-gray-700 rounded md:hover:bg-transparent md:hover:text-blue-500 md:p-0 hover:neon-text-blue"
+              aria-current="page">Home</a>
+          </li>
+          <li>
+            <a href="#about"
+              class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-pink-500 md:p-0 transition duration-300">About</a>
+          </li>
+          <li>
+            <a href="#documentation"
+              class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-pink-500 md:p-0 transition duration-300">Documentation</a>
+          </li>
+          <li>
+            <a href="#developer"
+              class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:hover:text-pink-500 md:p-0 transition duration-300">Developer</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
   </nav>
+  <main class="flex justify-center items-center min-h-screen pt-24 px-4 bg-gray-900">
+    <div
+      class="relative w-full max-w-2xl bg-gray-800/40 backdrop-blur-xl border border-gray-700 rounded-2xl p-6 shadow-2xl">
 
-  <main class="main-container">
-    <div class="glass-panel">
-      <h1><span class="neon-text-pink">NO PHONE</span> ZONE</h1>
-      <p class="subtitle">Real-time autonomous detection powered by TensorFlow.js</p>
+      <div class="text-center mb-6">
+        <h1 class="text-3xl md:text-5xl font-bold font-orbitron text-white mb-2">
+          <span class="text-pink-500 neon-text-pink">NO PHONE</span> ZONE
+        </h1>
+        <p class="text-gray-400 text-sm">Real-time Autonomous Surveillance System</p>
+      </div>
 
-      <div id="status">
+      <div id="status"
+        class="mb-4 text-center font-mono text-sm border border-gray-600 bg-gray-900/50 py-2 rounded text-blue-300">
         <i class="fas fa-circle-notch fa-spin"></i> Initializing Neural Network...
       </div>
 
-      <div class="video-wrapper">
-        <div class="scan-line" id="scanLine"></div>
+      <div
+        class="video-wrapper relative w-full aspect-video rounded-xl overflow-hidden border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)] bg-black">
 
-        <div id="placeholder" class="placeholder-icon">
-          <i class="fas fa-camera-retro"></i>
+        <div id="scanLine"
+          class="hidden absolute top-0 left-0 w-full h-1 bg-pink-500 shadow-[0_0_15px_#ec4899] z-20 animate-scan"></div>
+
+        <div id="placeholder" class="absolute inset-0 flex items-center justify-center text-gray-700 z-10">
+          <i class="fas fa-camera-retro text-6xl opacity-50"></i>
         </div>
 
-        <video id="video" playsinline muted></video>
-        <canvas id="canvas"></canvas>
+        <video id="video" class="absolute inset-0 w-full h-full object-cover z-0" playsinline muted></video>
+
+        <canvas id="canvas" class="absolute inset-0 w-full h-full z-10"></canvas>
       </div>
 
-      <div class="controls">
-        <button id="startBtn" onclick="startCamera()" disabled>
-          INITIALIZE SYSTEM
+      <div class="mt-8 flex justify-center gap-6">
+        <button id="startBtn"
+          class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all font-orbitron tracking-wider">
+          <i class="fas fa-power-off mr-2"></i> ACTIVATE
         </button>
-        <button id="stopBtn" onclick="stopCamera()">
-          TERMINATE SCAN
+
+        <button id="stopBtn"
+          class="hidden px-8 py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg shadow-lg transition-all font-orbitron tracking-wider">
+          <i class="fas fa-stop-circle mr-2"></i> TERMINATE
         </button>
       </div>
+
     </div>
   </main>
+  <section id="about" class="py-20 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+      <div
+        class="absolute top-10 left-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse">
+      </div>
+      <div
+        class="absolute bottom-10 right-10 w-72 h-72 bg-pink-600 rounded-full mix-blend-overlay filter blur-3xl opacity-10 animate-pulse">
+      </div>
+    </div>
+
+    <div class="max-w-screen-xl mx-auto px-4 relative z-10">
+
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold font-orbitron text-white">
+          PROJECT <span class="text-blue-500 neon-text-blue">OVERVIEW</span>
+        </h2>
+        <div class="w-24 h-1 bg-blue-500 mx-auto mt-4 rounded shadow-[0_0_10px_#3b82f6]"></div>
+        <p class="mt-4 text-gray-400 max-w-2xl mx-auto">
+          An autonomous surveillance system designed to detect unauthorized mobile device usage in secured zones using
+          client-side Neural Networks.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-8 rounded-xl hover:border-blue-500 transition-all duration-300 group hover:-translate-y-2">
+          <div
+            class="w-14 h-14 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-900/30 transition">
+            <i class="fas fa-microchip text-2xl text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold font-orbitron text-white mb-3">TensorFlow.js Core</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Powered by the <span class="text-blue-400">COCO-SSD</span> model. The entire detection process runs directly
+            in your browser using WebGL acceleration, ensuring zero latency.
+          </p>
+        </div>
+
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-8 rounded-xl hover:border-pink-500 transition-all duration-300 group hover:-translate-y-2">
+          <div
+            class="w-14 h-14 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:bg-pink-900/30 transition">
+            <i class="fas fa-user-shield text-2xl text-pink-400"></i>
+          </div>
+          <h3 class="text-xl font-bold font-orbitron text-white mb-3">Privacy First</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            No video data is sent to any server. All processing happens locally on the client's device (Edge Computing),
+            ensuring <span class="text-pink-400">100% data privacy</span>.
+          </p>
+        </div>
+
+        <div
+          class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 p-8 rounded-xl hover:border-blue-500 transition-all duration-300 group hover:-translate-y-2">
+          <div
+            class="w-14 h-14 bg-gray-900 rounded-lg flex items-center justify-center mb-6 group-hover:bg-blue-900/30 transition">
+            <i class="fas fa-volume-up text-2xl text-blue-400"></i>
+          </div>
+          <h3 class="text-xl font-bold font-orbitron text-white mb-3">Smart Alerts</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Features an automated <span class="text-blue-400">Voice Alert System</span>. When a "cell phone" class is
+            identified with >70% confidence, the system triggers an immediate audio warning.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <section id="documentation" class="py-20 bg-gray-800 relative border-t border-gray-700">
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold font-orbitron text-white">
+          SYSTEM <span class="text-green-500 neon-text-green">DOCUMENTATION</span>
+        </h2>
+        <div class="w-24 h-1 bg-green-500 mx-auto mt-4 rounded shadow-[0_0_10px_#22c55e]"></div>
+        <p class="text-gray-400 mt-4">Follow these simple steps to activate the AI Surveillance System.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+        <div>
+          <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-book-reader text-green-500 mr-3"></i> User Manual
+          </h3>
+
+          <div class="space-y-6">
+            <div class="flex">
+              <div
+                class="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-green-500 font-bold border border-green-500">
+                1</div>
+              <div class="ml-4">
+                <h4 class="text-white font-bold">Grant Permissions</h4>
+                <p class="text-sm text-gray-400 mt-1">Click "Allow" when the browser asks for camera access. The system
+                  needs video input to detect objects.</p>
+              </div>
+            </div>
+
+            <div class="flex">
+              <div
+                class="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-green-500 font-bold border border-green-500">
+                2</div>
+              <div class="ml-4">
+                <h4 class="text-white font-bold">Initialize System</h4>
+                <p class="text-sm text-gray-400 mt-1">Click the <span class="text-blue-400">INITIALIZE</span> button.
+                  Wait
+                  for the "Neural Network Loaded" status message.</p>
+              </div>
+            </div>
+
+            <div class="flex">
+              <div
+                class="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-green-500 font-bold border border-green-500">
+                3</div>
+              <div class="ml-4">
+                <h4 class="text-white font-bold">Detection & Alert</h4>
+                <p class="text-sm text-gray-400 mt-1">Bring a mobile phone in front of the camera. If detected (>70%
+                  confidence), the audio alarm will trigger automatically.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fas fa-cogs text-pink-500 mr-3"></i> Technical Requirements
+          </h3>
+
+          <div class="bg-gray-900/50 p-6 rounded-xl border border-gray-700">
+            <ul class="space-y-4">
+              <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                <span class="text-gray-400">Browser Support</span>
+                <span class="text-white font-mono text-sm">Chrome, Edge, Firefox (Latest)</span>
+              </li>
+              <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                <span class="text-gray-400">Camera</span>
+                <span class="text-white font-mono text-sm">Webcam (720p Recommended)</span>
+              </li>
+              <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                <span class="text-gray-400">Internet</span>
+                <span class="text-white font-mono text-sm">Required for Model Loading</span>
+              </li>
+              <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                <span class="text-gray-400">Light Condition</span>
+                <span class="text-white font-mono text-sm">Well-lit Environment</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span class="text-gray-400">Framework</span>
+                <span class="text-pink-400 font-mono text-sm">TensorFlow.js (COCO-SSD)</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-6 bg-red-900/20 border border-red-500/50 p-4 rounded-lg flex items-start">
+            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+            <div>
+              <h4 class="text-red-500 font-bold text-sm">Disclaimer</h4>
+              <p class="text-gray-400 text-xs mt-1">This system is for educational purposes only. Detection accuracy
+                depends on lighting and camera quality.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <section id="developer" class="py-20 bg-gray-900 relative">
+
+    <div class="max-w-4xl mx-auto px-6 relative z-10">
+
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold font-orbitron text-white">
+          MEET THE <span class="text-pink-500 neon-text-pink">CREATOR</span>
+        </h2>
+        <div class="w-24 h-1 bg-pink-500 mx-auto mt-4 rounded shadow-[0_0_10px_#ec4899]"></div>
+      </div>
+
+      <div
+        class="bg-gray-800/40 backdrop-blur-xl border border-gray-700 rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-10 hover:border-blue-500 transition-colors duration-500 group">
+
+        <div class="relative shrink-0">
+          <div
+            class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-pink-500 rounded-full blur-lg opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse">
+          </div>
+          <img src="./src/atul 2.jpg" alt="Atul Paul"
+            class="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-gray-900 shadow-xl z-10">
+
+          <div class="absolute bottom-2 right-2 z-20 bg-gray-900 rounded-full p-1 border border-gray-700">
+            <div class="bg-green-500 w-4 h-4 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]"></div>
+          </div>
+        </div>
+
+        <div class="text-center md:text-left flex-1">
+          <h3 class="text-3xl font-bold text-white font-orbitron mb-2">Atul Paul</h3>
+          <p class="text-blue-400 font-mono text-sm tracking-widest mb-4">FULL STACK DEVELOPER & AI ENTHUSIAST</p>
+
+          <p class="text-gray-400 leading-relaxed mb-6">
+            A passionate Computing & Information System student at <span class="text-white font-semibold">Daffodil
+              International University</span>. I specialize in building responsive web applications and integrating
+            <span class="text-pink-400">Machine Learning</span> models into the browser. Currently focused on Python,
+            Django,
+            and TensorFlow.js.
+          </p>
+
+          <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-8">
+            <span
+              class="px-3 py-1 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-blue-300 font-mono">Python</span>
+            <span
+              class="px-3 py-1 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-blue-300 font-mono">TensorFlow.js</span>
+            <span
+              class="px-3 py-1 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-blue-300 font-mono">Tailwind</span>
+            <span
+              class="px-3 py-1 bg-gray-700/50 border border-gray-600 rounded-full text-xs text-blue-300 font-mono">Django</span>
+          </div>
+
+          <div class="flex justify-center md:justify-start space-x-5">
+            <a href="https://github.com/atul-dev-ai" target="_blank"
+              class="text-gray-400 hover:text-white hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-github text-2xl"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/paul-atul" target="_blank"
+              class="text-gray-400 hover:text-blue-500 hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-linkedin text-2xl"></i>
+            </a>
+            <a href="https://www.facebook.com/atulkumar.paul.71" target="_blank"
+              class="text-gray-400 hover:text-blue-600 hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-facebook text-2xl"></i>
+            </a>
+            <a href="https://instagram.com/whois__atul" target="_blank"
+              class="text-gray-400 hover:text-pink-500 hover:scale-110 transition-transform duration-300">
+              <i class="fab fa-instagram text-2xl"></i>
+            </a>
+            <a href="mailto:paulatul020@gmail.com"
+              class="text-gray-400 hover:text-red-500 hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-envelope text-2xl"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <audio id="alertSound" src="audio.mp3"></audio>
 
-  <footer>
-    <p>© 2026 Atul Paul | Advanced AI Project</p>
+  <footer
+    class="bg-gray-900 pt-16 pb-8 border-t-4 border-blue-600 relative overflow-hidden shadow-[0_-5px_30px_rgba(37,99,235,0.2)]">
+
+    <div class="absolute top-0 left-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-screen-xl mx-auto px-6 relative z-10">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+        <div class="space-y-4">
+          <a href="#" class="flex items-center space-x-3 group">
+            <div
+              class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700 group-hover:border-blue-500 transition">
+              <i class="fas fa-robot text-xl text-blue-500 neon-text-blue"></i>
+            </div>
+            <span class="text-2xl font-bold font-orbitron text-white">
+              AI <span class="text-blue-500">VISION</span>
+            </span>
+          </a>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Advanced real-time object detection system designed for security and surveillance. Powered by TensorFlow.js
+            and Edge Computing.
+          </p>
+        </div>
+
+        <div>
+          <h3
+            class="text-white font-bold font-orbitron mb-6 tracking-wider border-b-2 border-pink-500 inline-block pb-1">
+            EXPLORE</h3>
+          <ul class="space-y-3">
+            <li>
+              <a href="#" class="text-gray-400 hover:text-blue-400 transition flex items-center group">
+                <i
+                  class="fas fa-chevron-right text-xs mr-2 text-gray-600 group-hover:text-blue-500 transition-transform group-hover:translate-x-1"></i>
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#about" class="text-gray-400 hover:text-blue-400 transition flex items-center group">
+                <i
+                  class="fas fa-chevron-right text-xs mr-2 text-gray-600 group-hover:text-blue-500 transition-transform group-hover:translate-x-1"></i>
+                About System
+              </a>
+            </li>
+            <li>
+              <a href="#developer" class="text-gray-400 hover:text-blue-400 transition flex items-center group">
+                <i
+                  class="fas fa-chevron-right text-xs mr-2 text-gray-600 group-hover:text-blue-500 transition-transform group-hover:translate-x-1"></i>
+                Developer Info
+              </a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-400 hover:text-green-400 transition flex items-center group">
+                <i
+                  class="fas fa-chevron-right text-xs mr-2 text-gray-600 group-hover:text-green-500 transition-transform group-hover:translate-x-1"></i>
+                Documentation
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3
+            class="text-white font-bold font-orbitron mb-6 tracking-wider border-b-2 border-blue-500 inline-block pb-1">
+            CONTACT</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start text-gray-400">
+              <i class="fas fa-map-marker-alt mt-1 mr-3 text-pink-500"></i>
+              <span>Daffodil International University,<br>Dhaka, Bangladesh</span>
+            </li>
+            <li class="flex items-center text-gray-400">
+              <i class="fas fa-envelope mr-3 text-pink-500"></i>
+              <a href="mailto:paulatul020@gmail.com" class="hover:text-white transition">paulatul020@gmail.com</a>
+            </li>
+            <li class="flex items-center text-gray-400">
+              <i class="fab fa-github mr-3 text-pink-500"></i>
+              <a href="https://github.com/atul-dev-ai" target="_blank"
+                class="hover:text-white transition">github.com/atul-dev-ai</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3
+            class="text-white font-bold font-orbitron mb-6 tracking-wider border-b-2 border-purple-500 inline-block pb-1">
+            UPDATES</h3>
+          <p class="text-gray-400 text-sm mb-4">Subscribe to get the latest AI security updates.</p>
+          <div class="flex">
+            <input type="email" placeholder="Email Address"
+              class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:border-blue-500 text-gray-300 text-sm">
+            <button
+              class="bg-gradient-to-r from-blue-600 to-pink-600 px-4 py-2 rounded-r-lg hover:opacity-90 transition text-white">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">
+          © 2025 <span class="text-white font-bold animate-pulse "><a href="https://atulpaul.vercel.app">Atul Paul</a> </span>. All Rights Reserved.
+        </p>
+
+        <div class="flex space-x-4">
+          <a href="https://www.facebook.com/atulkumar.paul.71"
+            class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition duration-300">
+            <i class="fab fa-facebook-f text-sm"></i>
+          </a>
+          <a href="https://x.com/paulatul020"
+            class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-pink-600 hover:text-white transition duration-300">
+            <i class="fab fa-twitter text-sm"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/paul-atul"
+            class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-purple-600 hover:text-white transition duration-300">
+            <i class="fab fa-linkedin-in text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
   </footer>
 
   <script src="index.js"></script>
