@@ -119,5 +119,4 @@ Contributions are welcome! If you want to add features like "Face Detection" or 
 <div align="center">
   <br>
   <p><i>Made with ❤️, TensorFlow, and lots of Coffee ☕</i></p>
-  <img src="https://img.shields.io/github/stars/atul-dev-ai/Mobile-Detection?style=social" alt="GitHub stars">
 </div>
